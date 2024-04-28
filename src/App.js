@@ -1,23 +1,55 @@
-import logo from './logo.svg';
+//TO DO:
+// add ability to edit contacts
+// enforce format for contact information?
+
+import React, { useState } from 'react';
 import './App.css';
+import ContactCard from './components/ContactCard';
+import NewContact from './components/NewContactModal';
+import NoContacts from './components/NoContacts';
 
 function App() {
+  const [contacts, setContacts] = useState([]);
+
+  function addContact(newContact) {
+      setContacts( prevContacts => {
+      return [...prevContacts, newContact]
+    }); 
+  }
+
+  function deleteContact(id) {
+    setContacts(prevContacts => {
+      return prevContacts.filter((contact, index) => {
+        return index !== id;
+      });
+    });
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="main-content"> 
+      <div className="msg-and-btn">
+        <NewContact addContact={addContact}/>
+        <NoContacts hasContacts={contacts.length > 0 ? true : false}/>
+        
+      </div>
+        <div className="contact-list">
+        {contacts.map((contact, index) => {
+          return (
+            <ContactCard
+              key={index}
+              id = {index}
+              imgUrl={contact.imgUrl}
+              name={contact.name}
+              number={contact.number}
+              email={contact.email}
+              onDelete={deleteContact}
+              className='list-item'
+            />
+          );
+        })}
+        </div>
+      </div>
     </div>
   );
 }
